@@ -1,0 +1,79 @@
+# Configuration for spatiotemporal prediction models
+# Used by 10_temporal_prediction.ipynb / src/temporal/*
+
+data:
+  csv_path: data/slimia_metadata.csv
+  img_size: 128
+  seq_len: 2
+  min_gap: 1
+  max_gap: 3
+
+  group_keys:
+    - microscope
+    - cell_line
+    - culture_medium
+    - formation_method
+    - seeding_density
+    - magnification
+    - biological_rep
+    - technical_rep
+
+  split: [0.70, 0.15, 0.15]
+
+training:
+  batch_size: 8
+  num_epochs: 200
+  patience: 40
+  num_workers: 4
+  seed: 42
+
+optimizer:
+  name: adam
+  lr: 1.0e-4
+
+scheduler:
+  name: reduce_on_plateau
+  mode: max
+  patience: 10
+  factor: 0.5
+
+models:
+  convlstm:
+    hidden_dim: 32
+    kernel_size: 3
+    loss: l1
+
+  predrnn_pp:
+    hidden_dims: [32, 64, 64, 64]
+    kernel_size: 3
+    uses_ghu: true
+    loss: l1
+
+  metadata_fusion:
+    base_channels: 32
+    embedding_dim: 32
+    continuous_features: 2
+    categorical_features:
+      - microscope
+      - cell_line
+      - culture_medium
+      - formation_method
+      - magnification
+    conditioning: film
+    optimizer: adamw
+    loss_note: "0.8*MSE + 0.2*(1-SSIM); fallback 0.6*MSE + 0.4*L1 without pytorch-msssim"
+
+  phydnet:
+    encoder_channels: 64
+    physics_channels: 32
+    residual_channels: 32
+    physics_operators_per_channel: 3
+    physics_kernel_size: 3
+    loss: l1
+    mixed_precision: true
+
+evaluation:
+  metrics: [mse, ssim, psnr]
+  visualizations:
+    - prediction_grid
+    - frame_importance

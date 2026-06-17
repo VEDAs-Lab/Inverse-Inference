@@ -1,0 +1,10 @@
+Label,Group,Best_F1,Best_Model,Average_F1_all_models
+Cell Line,Biological,0.9944,ImageShapeFusionTransformer,0.9888
+Culture Medium,Biological,0.9642,ViT,0.9604
+Seeding Density,Biological,0.9302,CoAtNet,0.8871
+Timepoint,Biological,0.8331,ConvNeXt,0.7494
+Formation Method,Biological,0.9949,ConvNeXt,0.9940
+Biological Macro F1,Biological,--,--,0.915
+Biological Rep,Acquisition,0.9583,ConvNeXt,0.9444
+Magnification,Acquisition,0.9997,CoAtNet,0.9985
+Microscope,Acquisition,1.0000,ImageShapeFusionTransformer,0.9993

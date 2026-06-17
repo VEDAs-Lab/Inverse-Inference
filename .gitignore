@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Data — too large for git, see data/README.md for download links
+data/*.csv
+data/*.tiff
+data/*.tif
+data/predicted_masks/
+data/rxrx1/
+!data/README.md
+!data/dataset_links.txt
+
+# Checkpoints — too large for git
+checkpoints/**/*.pth
+checkpoints/**/*.ckpt
+checkpoints/**/*.pt
+
+# Results (keep CSVs, ignore large figures if needed)
+results/**/*.png
+!results/figures/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Logs
+*.log
+wandb/

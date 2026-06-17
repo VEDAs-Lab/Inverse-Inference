@@ -1,0 +1,65 @@
+# Configuration for Hierarchical Multi-Task Transformer (HMTT)
+# Used by 04_ipp_all_models.ipynb and 11_cross_dataset_validation.ipynb
+
+model:
+  encoder: vit_base_patch16_224
+  pretrained: true
+  type: hmtt
+
+  # Causal label order (stable upstream determinants -> condition-dependent variables)
+  label_order:
+    - cell_line
+    - culture_medium
+    - seeding_density
+    - magnification
+    - microscope
+    - timepoint
+    - biological_rep
+
+  conditioning:
+    training: teacher_forcing
+    inference: autoregressive
+
+data:
+  csv_path: data/slimia_metadata.csv
+  image_size: 224
+  label_columns:
+    - microscope
+    - cell_line
+    - culture_medium
+    - formation_method
+    - seeding_density
+    - timepoint
+    - biological_rep
+    - magnification
+
+  train_reps: [T1, T2, T3, T4]
+  val_reps:   [T5, T8]
+  test_reps:  [T6, T7, T9, T10, T11, T12, T13, T14, T15, T16,
+               T17, T18, T19, T20, T21, T22, T23, T24]
+
+training:
+  batch_size: 32
+  num_epochs: 200
+  patience: 40
+  num_workers: 2
+  seeds: [42, 123, 999]
+
+optimizer:
+  name: adamw
+  lr: 1.0e-4
+  weight_decay: 1.0e-2
+
+scheduler:
+  name: reduce_on_plateau
+  mode: max
+  patience: 5
+  factor: 0.5
+
+loss:
+  name: weighted_ce_focal
+  focal_gamma: 2.0
+  focal_alpha: 0.25
+  class_weighting: balanced
+
+mixed_precision: true

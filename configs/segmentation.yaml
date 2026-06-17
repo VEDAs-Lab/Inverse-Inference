@@ -1,0 +1,99 @@
+# Configuration for 02_segmentation_training.ipynb / src/segmentation/train.py
+
+data:
+  csv_path: data/slimia_metadata.csv
+  img_size_default: 256   # CNN models (UNet++, DeepLabV3(+), AttentionUNet, SegNet, RefineNet)
+  img_size_transformer: 224  # Swin-UNet, TransUNet
+
+training:
+  batch_size: 8
+  num_epochs: 200
+  patience: 40
+  num_workers: 2
+  seeds: [42, 123, 999]
+
+optimizer:
+  name: adam
+  lr: 1.0e-4
+  # DeepLabV3 / AttentionUNet use AdamW with weight_decay 1.0e-4 / 3.0e-4 — see model table below
+
+scheduler:
+  name: reduce_on_plateau
+  mode: max          # monitors validation Dice
+  patience: 5
+  factor: 0.5
+
+augmentation:
+  horizontal_flip: 0.5
+  vertical_flip: 0.3
+  random_brightness_contrast: 0.3
+  random_gamma: 0.3
+  gauss_noise: 0.3
+  elastic_transform: 0.2
+  grid_distortion: 0.2
+  shift_scale_rotate: 0.5
+
+# Per-model overrides (Table 1 in paper)
+models:
+  unetpp:
+    encoder: resnet50
+    loss: focal_tversky
+    focal_tversky: {alpha: 0.7, beta: 0.3, gamma: 0.75}
+    optimizer: adam
+    lr: 1.0e-4
+
+  deeplabv3:
+    encoder: resnet34
+    loss: bce_dice
+    optimizer: adamw
+    lr: 3.0e-4
+    weight_decay: 1.0e-4
+
+  deeplabv3plus:
+    encoder: resnet50
+    loss: focal_tversky
+    focal_tversky: {alpha: 0.7, beta: 0.3, gamma: 0.75}
+    optimizer: adam
+    lr: 1.0e-4
+    mixed_precision: true
+
+  attention_unet:
+    encoder: custom
+    loss: bce_dice
+    optimizer: adamw
+    lr: 3.0e-4
+
+  segnet:
+    encoder: vgg_style
+    loss: focal_tversky
+    focal_tversky: {alpha: 0.7, beta: 0.3, gamma: 0.75}
+    optimizer: adam
+    lr: 1.0e-4
+    mixed_precision: true
+    img_size: 256
+    extra_augmentation: [gauss_noise, elastic_transform, grid_distortion, shift_scale_rotate]
+
+  refinenet:
+    encoder: resnet34
+    loss: focal_tversky
+    focal_tversky: {alpha: 0.7, beta: 0.3, gamma: 0.75}
+    optimizer: adam
+    lr: 1.0e-4
+    mixed_precision: false
+    note: "Best performing model — used to generate predicted masks for IPP"
+
+  swin_unet:
+    encoder: swin_tiny
+    loss: bce_with_logits
+    optimizer: adam
+    lr: 1.0e-4
+    mixed_precision: true
+    img_size: 224
+
+  transunet:
+    encoder: vit_base_patch16_224
+    loss: bce_with_logits
+    optimizer: adam
+    lr: 1.0e-4
+    mixed_precision: true
+    img_size: 224

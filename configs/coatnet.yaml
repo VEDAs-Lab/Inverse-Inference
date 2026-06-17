@@ -1,0 +1,108 @@
+# configs/coatnet.yaml
+# Configuration for CoAtNet-0 IPP model — best performing backbone (macro acc 98.0%)
+# Also covers Domain-Adversarial Training (DANN) settings for notebook 08.
+# Used by: notebooks/04_ipp_all_models.ipynb | notebooks/08_domain_adversarial.ipynb
+#          notebooks/09_gradcam_analysis.ipynb | src/ipp/coatnet.py
+#          src/domain_adaptation/dann_training.py
+
+model:
+  name: CoAtNet-0
+  backbone: coatnet_0_224
+  pretrained: false    # trained from scratch (per Table 2 in paper)
+  type: multi_task_backbone
+  num_classes: 0
+
+data:
+  csv_path: data/slimia_metadata.csv
+  image_size: 224
+
+  label_columns:
+    - microscope
+    - cell_line
+    - culture_medium
+    - formation_method
+    - seeding_density
+    - timepoint
+    - biological_rep
+    - magnification
+
+  train_reps: [T1, T2, T3, T4]
+  val_reps:   [T5, T8]
+  test_reps:  [T6, T7, T9, T10, T11, T12, T13, T14, T15,
+               T16, T17, T18, T19, T20, T21, T22, T23, T24]
+
+training:
+  batch_size: 32
+  num_epochs: 200
+  patience: 40
+  num_workers: 2
+  pin_memory: true
+  seeds: [42, 123, 999]
+
+optimizer:
+  name: adam
+  lr: 1.0e-4
+
+scheduler:
+  name: reduce_on_plateau
+  monitor: val_macro_f1
+  mode: max
+  patience: 5
+  factor: 0.5
+
+loss:
+  name: cross_entropy
+
+augmentation:
+  resize: [224, 224]
+  random_horizontal_flip: true
+  random_rotation_degrees: 10
+  normalize_mean: [0.5, 0.5, 0.5]
+  normalize_std:  [0.5, 0.5, 0.5]
+
+# Domain-Adversarial Training (notebook 08_domain_adversarial.ipynb) 
+# Biological-only label set — acquisition variables excluded from bio loss
+dann:
+  enabled: true
+  domain_variable: technical_rep    # T1–T24; one class per acquisition session
+
+  bio_labels:
+    - cell_line
+    - culture_medium
+    - formation_method
+    - seeding_density
+    - timepoint
+    - biological_rep
+    - magnification
+
+  # GRL lambda schedule: λ(p) = 2 / (1 + exp(−10·p)) − 1,  p = epoch / total_epochs
+  grl_schedule:
+    formula: "2 / (1 + exp(-10 * p)) - 1"
+    p_range: [0.0, 1.0]
+
+  discriminator:
+    layers: [256]
+    activation: relu
+    dropout: 0.3
+    architecture: "Linear(D→256) → ReLU → Dropout(0.3) → Linear(256→N_domain)"
+
+  loss:
+    biological: cross_entropy
+    domain: cross_entropy
+    weighting: equal    # L_total = L_bio + L_domain (Equation 2 in paper)
+
+# Grad-CAM settings (notebook 09_gradcam_analysis.ipynb)
+gradcam:
+  target_layer: stages[-1]    # last stage of CoAtNet backbone (before global pool)
+  overlay_alpha: 0.45
+
+  # 10 representative spheroids from paper Section B
+  sample_cell_lines:
+    - A549
+    - HCT116
+    - PANC1
+    - SKOV3
+    - U251MG
+    - SW837
+    - MCF10A
+    - CT5.3hTERT

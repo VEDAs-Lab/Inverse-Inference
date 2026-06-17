@@ -1,0 +1,68 @@
+# configs/convnext.yaml
+# Configuration for ConvNeXt-Tiny IPP model
+# Also serves as the base config for ViT-B/16 — swap model.backbone and model.pretrained.
+# Used by: notebooks/04_ipp_all_models.ipynb | src/ipp/convnext.py | src/ipp/vit.py
+
+model:
+  name: ConvNeXt-Tiny
+  backbone: convnext_tiny
+  pretrained: true            # ImageNet pretrained (timm)
+  type: multi_task_backbone   # one nn.Linear head per label
+  num_classes: 0              # strip timm classification head
+
+data:
+  csv_path: data/slimia_metadata.csv
+  image_size: 224
+
+  label_columns:
+    - microscope
+    - cell_line
+    - culture_medium
+    - formation_method
+    - seeding_density
+    - timepoint
+    - biological_rep
+    - magnification
+
+  # Technical-replicate splits — no acquisition leakage (Section: Train-Validation Partition)
+  train_reps: [T1, T2, T3, T4]
+  val_reps:   [T5, T8]
+  test_reps:  [T6, T7, T9, T10, T11, T12, T13, T14, T15,
+               T16, T17, T18, T19, T20, T21, T22, T23, T24]
+
+training:
+  batch_size: 32
+  num_epochs: 200
+  patience: 40           # early stopping on val macro-F1
+  num_workers: 2
+  pin_memory: true
+  seeds: [42, 123, 999]  # 3 independent seeds → mean ± std reported
+
+optimizer:
+  name: adam
+  lr: 1.0e-4
+
+scheduler:
+  name: reduce_on_plateau
+  monitor: val_macro_f1
+  mode: max
+  patience: 5
+  factor: 0.5
+
+loss:
+  name: cross_entropy    # separate nn.CrossEntropyLoss per head, no class weighting
+
+# Conservative morphology-preserving augmentation (paper Section: Implementation Details of IPP)
+# No elastic deformation, random cropping, scale jitter, or colour perturbations.
+augmentation:
+  resize: [224, 224]
+  random_horizontal_flip: true
+  random_rotation_degrees: 10
+  normalize_mean: [0.5, 0.5, 0.5]
+  normalize_std:  [0.5, 0.5, 0.5]
+
+# ViT-B/16 variant (same config, override these two fields) 
+# model:
+#   name: ViT-B/16
+#   backbone: vit_base_patch16_224
+#   pretrained: true       # timm pretrained weights

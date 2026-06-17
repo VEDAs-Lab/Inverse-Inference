@@ -1,0 +1,9 @@
+Attribute,Total classes,Train classes,Val classes,Test classes,Unseen in val,Unseen in test
+microscope,9,9,9,9,0,0
+cell_line,48,48,45,45,0,0
+culture_medium,8,8,8,8,0,0
+formation_method,5,5,5,5,0,0
+seeding_density,32,32,27,27,0,0
+timepoint,109,107,71,101,0,2
+biological_rep,8,8,8,8,0,0
+magnification,3,3,3,3,0,0

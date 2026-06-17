@@ -1,0 +1,25 @@
+# Dataset Download Links
+
+## Primary dataset
+
+SLiMIA — Spheroid Light Microscopy Image Atlas
+  Paper:  https://www.nature.com/articles/s41597-025-04441-x
+  Data:   https://figshare.com/collections/The_Spheroid_Light_Microscopy_Image_Atlas_SLiMIA_for_morphometrical_analysis_of_three_dimensional_cell_cultures/7486311  (search "SLiMIA")
+
+## Cross-dataset validation
+
+RxRx1 (fluorescence microscopy, batch-effect benchmark)
+  https://www.rxrx.ai/rxrx1
+  Kaggle: https://www.kaggle.com/c/recursion-cellular-image-classification
+
+Cell Tracking Challenge (temporal generalisation)
+  http://celltrackingchallenge.net/
+
+## Notes
+
+- All paths in `slimia_metadata.csv` should be absolute (or resolved at
+  notebook runtime relative to the Kaggle input mount, e.g.
+  `/kaggle/input/slimia-metadata/...`).
+- For Kaggle notebooks, upload `slimia_metadata.csv` (and predicted masks /
+  shape feature CSVs once generated) as a private dataset and reference it via
+  `/kaggle/input/<dataset-name>/...`.
