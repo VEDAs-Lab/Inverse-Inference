@@ -1,12 +1,11 @@
 # Inverse Protocol Prediction from Spheroid Microscopy Imaging via Morphology-Aware Structured Learning
 ## (Accepted at the 29th INTERNATIONAL CONFERENCE ON MEDICAL IMAGE COMPUTING AND COMPUTER ASSISTED INTERVENTION (MICCAI), 2026)
 
-Official implementation of the paper:
-
-**Inverse Protocol Prediction from Spheroid Microscopy Imaging via Morphology-Aware Structured Learning**
-
 **Authors:** Prateek Mittal, Ayush Srivastava, and Joohi Chauhan  
 **Affiliation:** Vision Exploration and Data Analytics (VEDAs) Lab, Department of Computer Science and Engineering, Motilal Nehru National Institute of Technology Allahabad
+
+<img width="1679" height="937" alt="image" src="https://github.com/user-attachments/assets/5d8ed6f2-d94c-42b5-a4f5-f2e186b2883f" />
+
 
 ---
 
