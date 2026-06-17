@@ -180,27 +180,3 @@ Download RxRx1 channel-1 images and set `CFG.rxrx1_csv` accordingly.
 Models are transferred **without fine-tuning** to isolate representation robustness.
 
 ---
-
-## Checkpoint directory layout
-
-```
-checkpoints/
-├── segmentation/
-│   ├── refinenet_seed42.pth
-│   ├── refinenet_seed123.pth
-│   ├── refinenet_seed999.pth
-│   └── ...
-├── ipp/
-│   ├── CoAtNet-0_seed42.pth
-│   ├── FusionTransformer_seed42.pth
-│   ├── HMTT_seed42.pth
-│   ├── CoAtNet_DANN_seed42.pth
-│   └── ablation/
-│       ├── Full_Model.pth
-│       └── ...
-└── temporal/
-    ├── ConvLSTM_best.pth
-    ├── PredRNN++_best.pth
-    ├── MetadataFusion_best.pth
-    └── PhyDNet_best.pth
-```
