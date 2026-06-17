@@ -1,4 +1,3 @@
-````markdown
 # SLIMIA-IPP: Inverse Protocol Prediction from Spheroid Microscopy Imaging
 
 Official implementation of the paper:
@@ -299,5 +298,4 @@ We thank the creators of the SLiMIA dataset and the broader computational micros
 
 This repository is released under the MIT License. See the LICENSE file for additional details.
 
-```
-```
+---
