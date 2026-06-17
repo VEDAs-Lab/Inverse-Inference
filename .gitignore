@@ -1,34 +1,87 @@
+cat > .gitignore << 'EOF'
+# ========================================
+# SLIMIA-IPP .gitignore (Recommended)
+# ========================================
+
 # Python
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
 *.egg-info/
-.ipynb_checkpoints/
+dist/
+build/
+
+# Virtual environments
 .venv/
 venv/
+env/
+ENV/
+*.env
 
-# Data — too large for git, see data/README.md for download links
-data/*.csv
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+__pycache__/
+
+# Data & Large files (track only small metadata)
+data/*.zip
+data/*.tar
+data/*.gz
 data/*.tiff
 data/*.tif
-data/predicted_masks/
-data/rxrx1/
-!data/README.md
-!data/dataset_links.txt
+data/raw/
+data/interim/
 
-# Checkpoints — too large for git
-checkpoints/**/*.pth
-checkpoints/**/*.ckpt
-checkpoints/**/*.pt
+# ML Outputs - Heavy files
+checkpoints/
+checkpoints/**/*
+*.pth
+*.pt
+*.h5
+*.onnx
+*.bin
 
-# Results (keep CSVs, ignore large figures if needed)
-results/**/*.png
-!results/figures/.gitkeep
+# Results - Figures are usually large
+results/figures/
+results/*/figures/
+figures/
+images/
+*.png
+*.jpg
+*.jpeg
+*.tiff
+*.tif
+*.pdf
 
-# OS / editor
+# But allow important small figures for README/paper
+!results/figures/key_*.png
+!results/figures/main_*.png
+!results/figures/comparison*.png
+!paper/figures/
+!docs/images/
+
+# Track metadata CSVs (unignore specific files)
+data/slimia_metadata.csv
+data/slimia_metadata_with_morphology.csv
+!data/*.csv
+
+# OS files
 .DS_Store
-.idea/
-.vscode/
+Thumbs.db
+*.swp
 
 # Logs
 *.log
-wandb/
+logs/
+
+# Optional: IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Temporary files
+*.tmp
+*.temp
+EOF
